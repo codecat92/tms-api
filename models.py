@@ -13,9 +13,9 @@ class LicenseTypeEnum (enum.Enum):
     B2 = "B2"
 
 class DriverStatusEnum (enum.Enum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    SUSPENDED = "suspended"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    SUSPENDED = "SUSPENDED"
 
 '''
 ##### ENUM SELESAI #####
@@ -35,7 +35,7 @@ class Driver(Base):
     license_expiry_date = Column (Date, nullable = False)
     phone = Column (String(20), nullable = False)
     status = Column (SAEnum(DriverStatusEnum), nullable = False)
-    fatigue_hours = Column (Float, nullable = False),
-    total_trips = Column (Integer, nullable = False, Default = 0),
-    incident_count = Column (Integer, nullable = False, Default = 0),
+    fatigue_hours = Column (Float, nullable = False)
+    total_trips = Column (Integer, nullable = False, default = 0)
+    incident_count = Column (Integer, nullable = False, default = 0)
     created_at= Column (DateTime, default = datetime.now)

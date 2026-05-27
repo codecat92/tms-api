@@ -28,9 +28,9 @@ class LicenseType(str, Enum):
 
 #class enum untuk driver_status
 class DriverStatus(str, Enum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    SUSPENDED = "suspended"
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+    SUSPENDED = "SUSPENDED"
 
 
 #class enum untuk shipment
