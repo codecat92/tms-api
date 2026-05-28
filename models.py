@@ -85,3 +85,18 @@ class Shipment(Base):
     driver = relationship("Driver", foreign_keys=[driver_id])
     codriver = relationship("Driver", foreign_keys=[codriver_id])
     route = relationship("Route")
+
+
+'''
+### TABEL USER ###
+'''
+
+class User(Base):
+    __tablename__ = "user"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    email      = Column(String(100), nullable=False, unique=True)
+    password   = Column(String(255), nullable=False)  # ← simpan hash!
+    full_name  = Column(String(100), nullable=False)
+    is_active  = Column(Integer, default=1)           # 1=active, 0=inactive
+    created_at = Column(DateTime, default=datetime.now)

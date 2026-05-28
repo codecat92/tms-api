@@ -131,3 +131,28 @@ class ShipmentResponse(BaseModel):
     actual_arrival: Optional[datetime] = None
     eta: Optional[datetime] = None
     model_config = {"from_attributes": True}
+
+
+# ─────────────────
+# USER
+# ─────────────────
+
+class UserCreate(BaseModel):
+    email:str
+    password:str = Field(min_length = 8, max_length=72)
+    full_name:str = Field(min_length = 3)
+
+class UserResponse(BaseModel):
+    id:int
+    email:str
+    full_name:str
+    is_active:int
+    model_config ={"from_attributes":True}
+
+class LoginRequest(BaseModel):
+    email:str
+    password:str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
