@@ -39,3 +39,20 @@ class Driver(Base):
     total_trips = Column (Integer, nullable = False, default = 0)
     incident_count = Column (Integer, nullable = False, default = 0)
     created_at= Column (DateTime, default = datetime.now)
+
+'''
+#### TABEL ROUTE ####
+'''
+
+class Route(Base):
+    __tablename__= "route"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable = False)
+    origin = Column(String(100), nullable = False)
+    destination = Column(String(100), nullable = False)
+    zone = Column(String(50), nullable = False)
+    distance_km = Column (Float, nullable = False)
+    estimated_duration_hours = Column (Float, nullable = False)
+    base_cost = Column (Float, nullable = False)
+    created_at = Column (DateTime, default = datetime.now)
+
