@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
 from models import Driver as DriverModel
-from schemas import DriverCreate, DriverResponse, DriverStatus
+from schemas import DriverCreate, DriverResponse, DriverStatus, DriverUpdate
 from datetime import datetime
 
 '''
@@ -24,17 +24,17 @@ def root():
 ##### GET SEMUA DRIVER
 '''
 
-@app.get("/drivers", response_model=DriverResponse)
-def get_drivers(db:Session = Depends(get_db)):
-    return db.query(DriverModel).all()
-
+@app.get("/drivers", response_model=list[DriverResponse]) #Endpoint ini akan return BANYAK driver, dan setiap driver harus sesuai template DriverResponse
+def get_drivers(db:Session = Depends(get_db)): # means => sebelum fungsi get_drivers di jalankan, minta izin koneksi ke database (Depends(get_db)), lalu kita simpan ke variable 'db' 
+    return db.query(DriverModel).all() #means => 'db' yang sudah punya akses ke database, melakukan request/query untuk semua data (.all)
+    # baris kode yang di atas ini ORM yang jika di terjemahkan ke SQL akan menjadi SELECT * FROM driver;
 
 '''
 ##### GET SATU DRIVER #####
 '''
 @app.get("/drivers/{driver_id}", response_model=DriverResponse)
 def get_driver(driver_id:int, db:Session = Depends (get_db)):
-    driver = db.query(DriverModel).filter(DriverModel.id ==driver_id).first()
+    driver = db.query(DriverModel).filter(DriverModel.id ==driver_id).first() # ini ORM, .filter(DriverModel.id == driver_id) artinya WHERE id = driver_id di SQL , .first() artinya LIMIT di sql
     if not driver:
         raise HTTPException(
             status_code=404,
@@ -66,3 +66,51 @@ def create_driver (data:DriverCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_driver)
     return new_driver
+
+'''
+#### UPDATE DRIVER ####
+'''
+@app.put("/drivers/{driver_id}", response_model=DriverResponse)
+def update_driver(driver_id:int, data:DriverUpdate, db:Session = Depends(get_db)):
+    #cari driver dulu
+    driver = db.query(DriverModel).filter(DriverModel.id == driver_id).first()
+    if not driver:
+        raise HTTPException(
+            status_code = 404,
+            detail = f"Driver dengan ID {driver_id} tidak ditemukan!"
+            )
+    #hanya update field yang dikirim user
+    if data.name is not None:
+        driver.name = data.name                          # ← driver dapat dari data
+    if data.phone is not None:
+        driver.phone = data.phone
+    if data.license_expiry_date is not None:
+        driver.license_expiry_date = data.license_expiry_date
+    if data.fatigue_hours is not None:
+        driver.fatigue_hours = data.fatigue_hours
+    if data.status is not None:
+        driver.status = data.status
+
+    db.commit()
+    db.refresh(driver)
+    return driver
+
+
+'''
+### DELETE DRIVER ###
+'''
+
+@app.delete("/drivers/{driver_id}", status_code = 204)
+def delete_driver(driver_id:int, db:Session = Depends(get_db)):
+    #cari driver
+    driver = db.query(DriverModel).filter(DriverModel.id == driver_id).first()
+    if not driver:
+        raise HTTPException(
+            status_code =404,
+            detail=f"Driver dengan ID {driver_id} tidak ditemukan!"
+        )
+
+    #hapus driver dari database
+    db.delete(driver)
+    db.commit()
+    return None 

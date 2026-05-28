@@ -90,7 +90,17 @@ class Driver(BaseModel):
     incident_count: int        # ← tidak ada di DriverResponse!
     created_at: datetime
 
+'''
+Update Driver
+'''
 
+class DriverUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    license_expiry_date: Optional[date] = None
+    fatigue_hours: Optional[float] = Field(default=None, ge=0, le=8)
+    status: Optional[DriverStatus] = None
+    
 '''
     ######
     ROUTE
