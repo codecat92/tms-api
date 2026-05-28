@@ -100,13 +100,34 @@ class RouteResponse(BaseModel):
 # SHIPMENT
 # ─────────────────
 
+class ShipmentCreate(BaseModel):
+    reference: str = Field(min_length=5)
+    fleet_id: int
+    driver_id: int
+    codriver_id: Optional[int] = None
+    route_id: int
+    scheduled_date: datetime
+    total_weight_kg: float = Field(ge=0, le=30000)
+    total_volume_m3: float = Field(ge=0)
+    vso_rate: float = Field(ge=0, le=100)
+
+class ShipmentUpdate(BaseModel):
+    state: Optional[ShipmentState] = None
+    actual_departure: Optional[datetime] = None
+    actual_arrival: Optional[datetime] = None
+    eta: Optional[datetime] = None
+    vso_rate: Optional[float] = Field(default=None, ge=0, le=100)
+
+
 class ShipmentResponse(BaseModel):
     id: int
     reference: str
-    driver: DriverResponse
+    driver: DriverResponse          # ← tetap pakai DriverResponse (ada field sensitif)
     codriver: Optional[DriverResponse] = None
-    route: RouteResponse
+    route: Route                    # ← ganti RouteResponse → Route (semua field)
     state: ShipmentState
     scheduled_date: datetime
+    actual_departure: Optional[datetime] = None
+    actual_arrival: Optional[datetime] = None
     eta: Optional[datetime] = None
     model_config = {"from_attributes": True}

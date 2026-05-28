@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Enum as SAEnum
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Enum as SAEnum, ForeignKey
+from sqlalchemy.orm import relationship, sessionmaker, DeclarativeBase
 from datetime import datetime
 from database import Base
 import enum
@@ -56,3 +57,31 @@ class Route(Base):
     base_cost = Column (Float, nullable = False)
     created_at = Column (DateTime, default = datetime.now)
 
+
+'''
+### TABEL SHIPMENT ###
+'''
+
+class Shipment(Base):
+    __tablename__ = "shipment"
+
+    id                  = Column(Integer, primary_key=True, index=True)
+    reference           = Column(String(50), nullable=False, unique=True)
+    fleet_id            = Column(Integer, nullable=False)
+    driver_id           = Column(Integer, ForeignKey("driver.id"), nullable=False)
+    codriver_id         = Column(Integer, ForeignKey("driver.id"), nullable=True)
+    route_id            = Column(Integer, ForeignKey("route.id"), nullable=False)
+    state               = Column(String(20), nullable=False, default="draft")
+    scheduled_date      = Column(DateTime, nullable=False)
+    actual_departure    = Column(DateTime, nullable=True)
+    actual_arrival      = Column(DateTime, nullable=True)
+    total_weight_kg     = Column(Float, nullable=False)
+    total_volume_m3     = Column(Float, nullable=False)
+    vso_rate            = Column(Float, nullable=False)
+    eta                 = Column(DateTime, nullable=True)
+    created_at          = Column(DateTime, default=datetime.now)
+
+    #relasi ke driver dan route
+    driver = relationship("Driver", foreign_keys=[driver_id])
+    codriver = relationship("Driver", foreign_keys=[codriver_id])
+    route = relationship("Route")
