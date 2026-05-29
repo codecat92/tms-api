@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Response
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
 from models import Shipment as ShipmentModel, User as UserModel
-from schemas import ShipmentCreate, ShipmentUpdate, ShipmentResponse
+from schemas import ShipmentCreate, ShipmentUpdate, ShipmentResponse, ShipmentState
 from datetime import datetime
 from auth import get_current_user
 
@@ -117,3 +117,26 @@ def delete_shipment(
     Hapus data shipment berdasarkan ID.
     """
 
+
+# UPDATE STATUS SHIPMENT
+@router.patch("/{shipment_id}/status", response_model=ShipmentResponse)
+def update_shipment_status(
+    shipment_id: int,
+    state: ShipmentState,
+    db: Session = Depends(get_db),
+    _: UserModel = Depends(get_current_user)
+):
+    """
+    Update status shipment berdasarkan ID.
+    Status yang tersedia: draft, confirmed, in_transit, delivered, cancelled.
+    """
+    shipment = db.query(ShipmentModel).filter(ShipmentModel.id == shipment_id).first()
+    if not shipment:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Shipment dengan ID {shipment_id} tidak ditemukan!"
+        )
+    shipment.state = state
+    db.commit()
+    db.refresh(shipment)
+    return shipment
