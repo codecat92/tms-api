@@ -100,3 +100,18 @@ class User(Base):
     full_name  = Column(String(100), nullable=False)
     is_active  = Column(Integer, default=1)           # 1=active, 0=inactive
     created_at = Column(DateTime, default=datetime.now)
+
+
+'''
+###TABEL FLEET###
+'''
+
+class Fleet(Base):
+    __tablename__ = "fleet"
+
+    id           = Column(Integer, primary_key=True, index=True)
+    plate_number = Column(String(20), nullable=False, unique=True)
+    vehicle_type = Column(String(50), nullable=False)
+    capacity_kg  = Column(Float, nullable=False)
+    status       = Column(String(20), nullable=False, default="available")
+    created_at   = Column(DateTime, default=datetime.now)

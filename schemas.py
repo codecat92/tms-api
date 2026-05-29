@@ -156,3 +156,33 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+# ─────────────────
+# FLEET
+# ─────────────────
+
+class FleetStatus(str, Enum):
+    AVAILABLE   = "available"
+    IN_USE      = "in_use"
+    MAINTENANCE = "maintenance"
+
+class FleetCreate(BaseModel):
+    plate_number: str = Field(min_length=3, max_length=20)
+    vehicle_type: str = Field(min_length=3)
+    capacity_kg: float = Field(gt=0)
+    status: FleetStatus = FleetStatus.AVAILABLE
+
+class FleetUpdate(BaseModel):
+    vehicle_type: Optional[str] = Field(default=None, min_length=3)
+    capacity_kg: Optional[float] = Field(default=None, gt=0)
+    status: Optional[FleetStatus] = None
+
+class FleetResponse(BaseModel):
+    id: int
+    plate_number: str
+    vehicle_type: str
+    capacity_kg: float
+    status: FleetStatus
+    created_at: datetime
+    model_config = {"from_attributes": True}
