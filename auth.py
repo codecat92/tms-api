@@ -5,10 +5,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from database import get_db
+import os
+from dotenv import load_dotenv
 
 # ─────────────────────────────
 # CONFIG
-SECRET_KEY = "tms-secret-key-ganti-ini-nanti"  # ganti dengan random string
+load_dotenv()
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
