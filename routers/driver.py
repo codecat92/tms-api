@@ -18,8 +18,12 @@ router = APIRouter(
 def get_drivers(
     db: Session = Depends(get_db),
     current_user:UserModel = Depends(get_current_user)):  
-
     return db.query(DriverModel).all()
+    """
+    Ambil semua data driver yang terdaftar di sistem TMS.
+    """
+
+
 
 # GET SATU DRIVER
 @router.get("/{driver_id}", response_model=DriverResponse)
@@ -34,6 +38,13 @@ def get_driver(
             detail=f"Driver dengan ID {driver_id} tidak ditemukan!"
         )
     return driver
+    """
+    Ambil detail satu driver berdasarkan ID.
+    """
+
+
+
+
 
 # POST DRIVER BARU
 @router.post("", response_model=DriverResponse, status_code=201)
@@ -57,6 +68,12 @@ def create_driver(
     db.commit()
     db.refresh(new_driver)
     return new_driver
+    """
+    Tambahkan driver baru ke sistem TMS.
+    """
+
+
+
 
 # UPDATE DRIVER
 @router.put("/{driver_id}", response_model=DriverResponse)
@@ -84,6 +101,11 @@ def update_driver(
     db.commit()
     db.refresh(driver)
     return driver
+    """
+    Update data driver berdasarkan ID.
+    Hanya field yang dikirim yang akan diupdate.
+    """
+    
 
 # DELETE DRIVER
 @router.delete("/{driver_id}", status_code=204)
@@ -100,3 +122,6 @@ def delete_driver(
     db.delete(driver)
     db.commit()
     return None
+    """
+    Hapus data driver berdasarkan ID.
+    """

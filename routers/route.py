@@ -23,6 +23,10 @@ def get_routes(
     current_user:UserModel = Depends(get_current_user)
     ):
     return db.query(RouteModel).all()
+    """
+    Ambil semua data route yang terdaftar di sistem TMS.
+    """
+
 
 
 
@@ -47,6 +51,11 @@ def create_route(
     db.commit()
     db.refresh(new_route)
     return new_route
+    """
+    Tambahkan route baru ke sistem TMS.
+    """
+
+
 
 
 
@@ -82,6 +91,13 @@ def update_route(
     db.commit()
     db.refresh(route)
     return route
+    """
+    Update data route berdasarkan ID.
+    Hanya field yang dikirim yang akan diupdate.
+    """
+
+
+
 
 #ENDPOINT UNTUK DELETE ROUTE
 @router.delete("/{route_id}", status_code=204)
@@ -99,3 +115,6 @@ def delete_route(
     db.delete(route)
     db.commit()
     return None
+    """
+    Hapus data route berdasarkan ID.
+    """

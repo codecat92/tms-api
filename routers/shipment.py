@@ -21,6 +21,9 @@ def get_shipment(
     db:Session = Depends(get_db),
     current_user:UserModel = Depends(get_current_user)):
     return db.query(ShipmentModel).all()
+    """
+    Ambil semua data shipment yang terdaftar di sistem TMS.
+    """
 
 
 
@@ -49,6 +52,11 @@ def create_shipment(
     db.commit()
     db.refresh(new_shipment)
     return new_shipment
+    """
+    Tambahkan driver baru ke sistem TMS.
+    """
+
+
 
 
 #EDIT SHIPMENT
@@ -80,6 +88,13 @@ def update_shipment(
     db.commit()
     db.refresh(shipment)
     return shipment
+    """
+    Update data shipment berdasarkan ID.
+    Hanya field yang dikirim yang akan diupdate.
+    """
+
+
+
 
 
 #DELETE SHIPMENT
@@ -98,5 +113,7 @@ def delete_shipment(
     db.delete(shipment)
     db.commit()
     return Response(status_code=204)
-    
+    """
+    Hapus data shipment berdasarkan ID.
+    """
 
