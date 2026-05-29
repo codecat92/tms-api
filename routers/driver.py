@@ -105,7 +105,7 @@ def update_driver(
     Update data driver berdasarkan ID.
     Hanya field yang dikirim yang akan diupdate.
     """
-    
+
 
 # DELETE DRIVER
 @router.delete("/{driver_id}", status_code=204)
@@ -125,3 +125,18 @@ def delete_driver(
     """
     Hapus data driver berdasarkan ID.
     """
+
+
+
+
+# FATIGUE ALERT
+@router.get("/alerts/fatigue", response_model=list[DriverResponse])
+def get_fatigue_alerts(
+    db: Session = Depends(get_db),
+    _: UserModel = Depends(get_current_user)
+):
+    """
+    Ambil daftar driver yang fatigue hours nya melebihi 6 jam.
+    Digunakan untuk monitoring keselamatan pengemudi.
+    """
+    return db.query(DriverModel).filter(DriverModel.fatigue_hours > 6).all()
