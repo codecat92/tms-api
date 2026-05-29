@@ -5,6 +5,7 @@ from models import Shipment as ShipmentModel, User as UserModel
 from schemas import ShipmentCreate, ShipmentUpdate, ShipmentResponse, ShipmentState
 from datetime import datetime
 from auth import get_current_user
+from typing import Optional
 
 router = APIRouter(
     prefix="/shipments",
@@ -18,9 +19,39 @@ ENDPOINTS
 #BACA SEMUA SHIPMENT
 @router.get("", response_model= list[ShipmentResponse])
 def get_shipment(
+    #query parameters (opsional)
+    state: Optional[ShipmentState] = None,
+    driver_id: Optional[int] = None,
+    route_id: Optional[int] = None,
+
+
+
+    #dependencies
     db:Session = Depends(get_db),
     current_user:UserModel = Depends(get_current_user)):
-    return db.query(ShipmentModel).all()
+
+
+    """
+    Ambil semua shipment.
+    Bisa difilter by state, driver_id, atau route_id.
+    
+    Contoh:
+    - /shipments?state=in_transit
+    - /shipments?driver_id=1
+    - /shipments?route_id=2
+    """
+
+    query = db.query(ShipmentModel)
+
+    if state is not None:
+        query = query.filter(ShipmentModel.state.ilike(f"%{state}$"))
+    if driver_id is not None:
+        query = query.filter(ShipmentModel.driver_id == driver_id)
+    if route_id is not None:
+        query = query.filter(ShipmentModel.route_id == route_id)
+
+
+    return query.all()
     """
     Ambil semua data shipment yang terdaftar di sistem TMS.
     """

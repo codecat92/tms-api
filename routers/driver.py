@@ -2,9 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
 from models import Driver as DriverModel, User as UserModel
-from schemas import DriverCreate, DriverResponse, DriverStatus, DriverUpdate
+from schemas import DriverCreate, DriverResponse, DriverStatus, DriverUpdate, LicenseType
 from datetime import datetime
 from auth import get_current_user
+from typing import Optional
 
 
 
@@ -16,11 +17,38 @@ router = APIRouter(
 # GET SEMUA DRIVER
 @router.get("", response_model=list[DriverResponse])
 def get_drivers(
+    #query parameters, semuanya opsional
+    status:Optional[DriverStatus] = None, #filter untuk status driver
+    license_type:Optional[LicenseType] = None, #filter untuk jenis SIM
+    name:Optional[str] = None, #search by name
+
+    # Pagination parameters
+    page: int = 1,        # halaman berapa? default halaman 1
+    limit: int = 10,      # berapa data per halaman? default 10
+
+    #dependencies
     db: Session = Depends(get_db),
     current_user:UserModel = Depends(get_current_user)):  
-    return db.query(DriverModel).all()
+
+    query = db.query(DriverModel)
+    #Apply filter kalau ada
+    if status is not None:
+        query = query.filter(DriverModel.status == status)
+    
+    if license_type is not None:
+        query = query.filter(DriverModel.license_type == license_type)
+    
+    if name is not None:
+        # ilike = case insensitive search
+        # %name% = contains, bukan exact match
+        query = query.filter(DriverModel.name.ilike(f"%{name}%"))
+
+    # Apply pagination
+    offset = (page - 1) * limit   # hitung skip berapa data
+    return query.all()
     """
     Ambil semua data driver yang terdaftar di sistem TMS.
+    dengan fitur filter yang opsional
     """
 
 

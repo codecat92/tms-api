@@ -5,6 +5,7 @@ from models import Route as RouteModel, User as UserModel
 from schemas import Route, RouteResponse, RouteCreate, RouteUpdate
 from datetime import datetime
 from auth import get_current_user
+from typing import Optional
 
 router = APIRouter(
     prefix="/routes",
@@ -19,10 +20,35 @@ ENDPOINTS
 #ENDPOINT UNTUK BACA SEMUA ROUTE
 @router.get("", response_model= list[Route])
 def get_routes(
+
+    #query parameters(opsional)
+    zone: Optional[str] = None, #filter untuk zone
+    origin: Optional[str] = None, #filter untuk origin
+    destination: Optional[str] = None, #filter ntuk destination 
+
+    #dependencies
     db:Session = Depends(get_db),
     current_user:UserModel = Depends(get_current_user)
     ):
-    return db.query(RouteModel).all()
+
+    """
+    Ambil semua route.
+    Bisa difilter by zone, origin, atau destination.
+    
+    Contoh:
+    - /routes?zone=Jawa
+    - /routes?origin=Jakarta
+    - /routes?destination=Surabaya
+    """
+    query = db.query(RouteModel)
+
+    if zone is not None:
+        query = query.filter(RouteModel.zone.ilike(f"%{zone}%"))
+    if origin is not None:
+        query = query.filter(RouteModel.zone.ilike(f"%{origin}%"))
+    if destination is not None:
+        query = query.filter(RouteModel.destination.ilike(f"%{destination}%"))
+    return query.all()
     """
     Ambil semua data route yang terdaftar di sistem TMS.
     """
