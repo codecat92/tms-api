@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
-from models import Route as RouteModel
+from models import Route as RouteModel, User as UserModel
 from schemas import Route, RouteResponse, RouteCreate, RouteUpdate
 from datetime import datetime
-
+from auth import get_current_user
 
 router = APIRouter(
     prefix="/routes",
@@ -18,14 +18,20 @@ ENDPOINTS
 
 #ENDPOINT UNTUK BACA SEMUA ROUTE
 @router.get("", response_model= list[Route])
-def get_routes(db:Session = Depends(get_db)):
+def get_routes(
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     return db.query(RouteModel).all()
 
 
 
 #ENDPOINT UNTUK MENAMBAHKAN ROUTE
 @router.post("", response_model=RouteResponse, status_code=201)
-def create_route(data:RouteCreate, db:Session = Depends(get_db)):
+def create_route(
+    data:RouteCreate, db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     new_route = RouteModel(
         name = data.name,
         origin = data.origin,
@@ -46,7 +52,12 @@ def create_route(data:RouteCreate, db:Session = Depends(get_db)):
 
 #ENDPOINT UNTUK UPDATE ROUTE
 @router.put("/{route_id}", response_model=RouteResponse)
-def update_route(route_id:int, data:RouteUpdate, db:Session = Depends(get_db)):
+def update_route(
+    route_id:int,
+    data:RouteUpdate,
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     route = db.query(RouteModel).filter(RouteModel.id == route_id).first()
     if not route:
         raise HTTPException(
@@ -74,7 +85,11 @@ def update_route(route_id:int, data:RouteUpdate, db:Session = Depends(get_db)):
 
 #ENDPOINT UNTUK DELETE ROUTE
 @router.delete("/{route_id}", status_code=204)
-def delete_route(route_id:int, db:Session = Depends(get_db)):
+def delete_route(
+    route_id:int,
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     route = db.query(RouteModel).filter(RouteModel.id == route_id).first()
     if not route:
         raise HTTPException(

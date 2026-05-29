@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, Response
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
-from models import Shipment as ShipmentModel
+from models import Shipment as ShipmentModel, User as UserModel
 from schemas import ShipmentCreate, ShipmentUpdate, ShipmentResponse
 from datetime import datetime
-
+from auth import get_current_user
 
 router = APIRouter(
     prefix="/shipments",
@@ -17,14 +17,20 @@ ENDPOINTS
 
 #BACA SEMUA SHIPMENT
 @router.get("", response_model= list[ShipmentResponse])
-def get_shipment(db:Session = Depends(get_db)):
+def get_shipment(
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)):
     return db.query(ShipmentModel).all()
 
 
 
 #MENAMBAHKAN SHIPMENT
 @router.post("", response_model= ShipmentResponse, status_code=201)
-def create_shipment(data:ShipmentCreate, db:Session = Depends(get_db)):
+def create_shipment(
+    data:ShipmentCreate,
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     new_shipment = ShipmentModel(
         reference = data.reference,
         fleet_id = data.fleet_id,
@@ -47,7 +53,13 @@ def create_shipment(data:ShipmentCreate, db:Session = Depends(get_db)):
 
 #EDIT SHIPMENT
 @router.put("/{shipment_id}", response_model=ShipmentResponse)
-def update_shipment(shipment_id:int, data:ShipmentUpdate, db:Session = Depends(get_db)):
+def update_shipment(
+    shipment_id:int,
+    data:ShipmentUpdate,
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
+    
     shipment = db.query(ShipmentModel).filter(ShipmentModel.id == shipment_id).first()
     if not shipment:
         raise HTTPException(
@@ -72,7 +84,11 @@ def update_shipment(shipment_id:int, data:ShipmentUpdate, db:Session = Depends(g
 
 #DELETE SHIPMENT
 @router.delete("/{shipment_id}", status_code=204)
-def delete_shipment(shipment_id:int, db:Session = Depends(get_db)):
+def delete_shipment(
+    shipment_id:int,
+    db:Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     shipment = db.query(ShipmentModel).filter(ShipmentModel.id == shipment_id).first()
     if not shipment:
         raise HTTPException(
