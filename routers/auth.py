@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User as UserModel
-from schemas import UserCreate, UserResponse, LoginRequest, TokenResponse
+from schemas import UserCreate, UserResponse, TokenResponse
 from auth import hash_password, verify_password, create_access_token
-
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
     prefix="/auth",
@@ -36,9 +36,12 @@ def register(data:UserCreate, db:Session = Depends(get_db)):
 
 #LOGIN
 @router.post("/login", response_model=TokenResponse)
-def login(data:LoginRequest, db:Session = Depends(get_db)):
+def login(
+    data:OAuth2PasswordRequestForm = Depends()
+, db:Session = Depends(get_db)
+):
     #cari user berdasarkan email
-    user = db.query(UserModel).filter(UserModel.email == data.email).first()
+    user = db.query(UserModel).filter(UserModel.email == data.username).first()
     if not user:
         raise HTTPException(
             status_code = 401,

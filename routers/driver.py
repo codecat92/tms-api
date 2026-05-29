@@ -1,9 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import engine, get_db, Base
-from models import Driver as DriverModel
+from models import Driver as DriverModel, User as UserModel
 from schemas import DriverCreate, DriverResponse, DriverStatus, DriverUpdate
 from datetime import datetime
+from auth import get_current_user
+
 
 
 router = APIRouter(
@@ -13,12 +15,18 @@ router = APIRouter(
 
 # GET SEMUA DRIVER
 @router.get("", response_model=list[DriverResponse])
-def get_drivers(db: Session = Depends(get_db)):
+def get_drivers(
+    db: Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)):  
+
     return db.query(DriverModel).all()
 
 # GET SATU DRIVER
 @router.get("/{driver_id}", response_model=DriverResponse)
-def get_driver(driver_id: int, db: Session = Depends(get_db)):
+def get_driver(
+    driver_id: int, db: Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     driver = db.query(DriverModel).filter(DriverModel.id == driver_id).first()
     if not driver:
         raise HTTPException(
@@ -29,7 +37,10 @@ def get_driver(driver_id: int, db: Session = Depends(get_db)):
 
 # POST DRIVER BARU
 @router.post("", response_model=DriverResponse, status_code=201)
-def create_driver(data: DriverCreate, db: Session = Depends(get_db)):
+def create_driver(
+    data: DriverCreate, db: Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     new_driver = DriverModel(
         name=data.name,
         license_number=data.license_number,
@@ -49,7 +60,10 @@ def create_driver(data: DriverCreate, db: Session = Depends(get_db)):
 
 # UPDATE DRIVER
 @router.put("/{driver_id}", response_model=DriverResponse)
-def update_driver(driver_id: int, data: DriverUpdate, db: Session = Depends(get_db)):
+def update_driver(
+    driver_id: int, data: DriverUpdate, db: Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     driver = db.query(DriverModel).filter(DriverModel.id == driver_id).first()
     if not driver:
         raise HTTPException(
@@ -73,7 +87,10 @@ def update_driver(driver_id: int, data: DriverUpdate, db: Session = Depends(get_
 
 # DELETE DRIVER
 @router.delete("/{driver_id}", status_code=204)
-def delete_driver(driver_id: int, db: Session = Depends(get_db)):
+def delete_driver(
+    driver_id: int, db: Session = Depends(get_db),
+    current_user:UserModel = Depends(get_current_user)
+    ):
     driver = db.query(DriverModel).filter(DriverModel.id == driver_id).first()
     if not driver:
         raise HTTPException(
