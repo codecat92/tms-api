@@ -118,8 +118,9 @@ def update_route(
     db.refresh(route)
     return route
     """
-    Update data route berdasarkan ID.
-    Hanya field yang dikirim yang akan diupdate.
+    Update data route berdasarkan route id
+    hanya ubah data yang di isi oleh user
+    
     """
 
 

@@ -46,26 +46,32 @@ def seed_routes():
     db.commit()
     print("✅ Routes seeded!")
 
+
 def seed_shipments():
     shipments = [
-        Shipment(reference="SH-001", fleet_id=1, driver_id=4, route_id=4, state="delivered", scheduled_date=datetime(2026, 5, 1, 8, 0), actual_departure=datetime(2026, 5, 1, 8, 30), actual_arrival=datetime(2026, 5, 1, 12, 0), total_weight_kg=3000, total_volume_m3=10, vso_rate=85.5, eta=datetime(2026, 5, 1, 11, 30), created_at=datetime.now()),
-        Shipment(reference="SH-002", fleet_id=2, driver_id=5, route_id=5, state="delivered", scheduled_date=datetime(2026, 5, 3, 7, 0), actual_departure=datetime(2026, 5, 3, 7, 15), actual_arrival=datetime(2026, 5, 3, 20, 0), total_weight_kg=8000, total_volume_m3=25, vso_rate=90.0, eta=datetime(2026, 5, 3, 19, 0), created_at=datetime.now()),
-        Shipment(reference="SH-003", fleet_id=3, driver_id=6, route_id=6, state="in_transit", scheduled_date=datetime(2026, 5, 29, 6, 0), total_weight_kg=15000, total_volume_m3=50, vso_rate=75.0, created_at=datetime.now()),
-        Shipment(reference="SH-004", fleet_id=1, driver_id=7, route_id=4, state="confirmed", scheduled_date=datetime(2026, 5, 30, 8, 0), total_weight_kg=2000, total_volume_m3=8, vso_rate=80.0, created_at=datetime.now()),
-        Shipment(reference="SH-005", fleet_id=5, driver_id=8, route_id=7, state="delivered", scheduled_date=datetime(2026, 5, 10, 7, 0), actual_departure=datetime(2026, 5, 10, 7, 30), actual_arrival=datetime(2026, 5, 10, 18, 0), total_weight_kg=7000, total_volume_m3=20, vso_rate=95.0, eta=datetime(2026, 5, 10, 17, 0), created_at=datetime.now()),
-        Shipment(reference="SH-006", fleet_id=2, driver_id=9, route_id=5, state="delivered", scheduled_date=datetime(2026, 5, 15, 6, 0), actual_departure=datetime(2026, 5, 15, 6, 30), actual_arrival=datetime(2026, 5, 15, 19, 0), total_weight_kg=9000, total_volume_m3=30, vso_rate=88.0, eta=datetime(2026, 5, 15, 18, 0), created_at=datetime.now()),
-        Shipment(reference="SH-007", fleet_id=3, driver_id=10, route_id=8, state="cancelled", scheduled_date=datetime(2026, 5, 20, 8, 0), total_weight_kg=18000, total_volume_m3=60, vso_rate=0.0, created_at=datetime.now()),
-        Shipment(reference="SH-008", fleet_id=5, driver_id=11, route_id=6, state="draft", scheduled_date=datetime(2026, 6, 1, 8, 0), total_weight_kg=4000, total_volume_m3=15, vso_rate=70.0, created_at=datetime.now()),
+        Shipment(reference="SH-001", fleet_id=1, driver_id=1, route_id=1, state="delivered", scheduled_date=datetime(2026, 5, 1, 8, 0), actual_departure=datetime(2026, 5, 1, 8, 30), actual_arrival=datetime(2026, 5, 1, 12, 0), total_weight_kg=3000, total_volume_m3=10, vso_rate=85.5, eta=datetime(2026, 5, 1, 11, 30), created_at=datetime.now()),
+        Shipment(reference="SH-002", fleet_id=2, driver_id=2, route_id=2, state="delivered", scheduled_date=datetime(2026, 5, 3, 7, 0), actual_departure=datetime(2026, 5, 3, 7, 15), actual_arrival=datetime(2026, 5, 3, 20, 0), total_weight_kg=8000, total_volume_m3=25, vso_rate=90.0, eta=datetime(2026, 5, 3, 19, 0), created_at=datetime.now()),
+        Shipment(reference="SH-003", fleet_id=3, driver_id=3, route_id=3, state="in_transit", scheduled_date=datetime(2026, 5, 29, 6, 0), total_weight_kg=15000, total_volume_m3=50, vso_rate=75.0, created_at=datetime.now()),
+        Shipment(reference="SH-004", fleet_id=1, driver_id=4, route_id=1, state="confirmed", scheduled_date=datetime(2026, 5, 30, 8, 0), total_weight_kg=2000, total_volume_m3=8, vso_rate=80.0, created_at=datetime.now()),
+        Shipment(reference="SH-005", fleet_id=5, driver_id=5, route_id=4, state="delivered", scheduled_date=datetime(2026, 5, 10, 7, 0), actual_departure=datetime(2026, 5, 10, 7, 30), actual_arrival=datetime(2026, 5, 10, 18, 0), total_weight_kg=7000, total_volume_m3=20, vso_rate=95.0, eta=datetime(2026, 5, 10, 17, 0), created_at=datetime.now()),
+        Shipment(reference="SH-006", fleet_id=2, driver_id=6, route_id=2, state="delivered", scheduled_date=datetime(2026, 5, 15, 6, 0), actual_departure=datetime(2026, 5, 15, 6, 30), actual_arrival=datetime(2026, 5, 15, 19, 0), total_weight_kg=9000, total_volume_m3=30, vso_rate=88.0, eta=datetime(2026, 5, 15, 18, 0), created_at=datetime.now()),
+        Shipment(reference="SH-007", fleet_id=3, driver_id=7, route_id=5, state="cancelled", scheduled_date=datetime(2026, 5, 20, 8, 0), total_weight_kg=18000, total_volume_m3=60, vso_rate=0.0, created_at=datetime.now()),
+        Shipment(reference="SH-008", fleet_id=5, driver_id=8, route_id=3, state="draft", scheduled_date=datetime(2026, 6, 1, 8, 0), total_weight_kg=4000, total_volume_m3=15, vso_rate=70.0, created_at=datetime.now()),
     ]
     db.add_all(shipments)
     db.commit()
     print("✅ Shipments seeded!")
 
+
+
 if __name__ == "__main__":
     print("🌱 Seeding database...")
-    # seed_fleet()    ← skip, sudah ada!
-    seed_drivers()
-    seed_routes()
-    seed_shipments()
+    seed_fleet()   
+    # seed_drivers()  ← skip, sudah ada!
+    # seed_routes()   ← skip, sudah ada!
+    # seed_shipments()  # ← hanya ini yang perlu!
     db.close()
     print("🎉 Database seeded successfully!")
+
+
+

@@ -44,7 +44,7 @@ def get_shipment(
     query = db.query(ShipmentModel)
 
     if state is not None:
-        query = query.filter(ShipmentModel.state.ilike(f"%{state}$"))
+        query = query.filter(ShipmentModel.state == state)
     if driver_id is not None:
         query = query.filter(ShipmentModel.driver_id == driver_id)
     if route_id is not None:
