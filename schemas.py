@@ -130,9 +130,11 @@ class ShipmentResponse(BaseModel):
     route: Route                    # ← ganti RouteResponse → Route (semua field)
     state: ShipmentState
     scheduled_date: datetime
+    total_weight_kg:float
     actual_departure: Optional[datetime] = None
     actual_arrival: Optional[datetime] = None
     eta: Optional[datetime] = None
+    vso_rate: float
     model_config = {"from_attributes": True}
 
 
