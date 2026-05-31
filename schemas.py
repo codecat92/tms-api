@@ -46,9 +46,12 @@ class DriverUpdate(BaseModel):
 class DriverResponse(BaseModel):
     id: int
     name: str
+    license_number: str
     license_type: LicenseType
     license_expiry_date: date
+    phone:str
     status: DriverStatus
+    fatigue_hours:float
     total_trips: int
     model_config = {"from_attributes": True}
 
