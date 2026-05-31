@@ -35,6 +35,20 @@ Backend API untuk mengelola operasional transportasi logistik.
         "email": "hello@tms.com"
     }
 )
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",    # ← React dev server
+        "http://localhost:3000",    # ← alternatif
+        "*"                         # ← semua origin (untuk development)
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],            # ← izinkan semua HTTP method
+    allow_headers=["*"],            # ← izinkan semua header
+)
     
 
 
